@@ -1,63 +1,61 @@
 Unity5 Effects
 ============
 
-Unity5 用エフェクト置き場。  
-こちらのパッケージをインポートすれば大体そのまま使えます：[IstEffects.unitypackage](https://github.com/i-saint/Unity5Effects/raw/master/Packages/IstEffects.unitypackage)  
-多くはレンダリングパスが deferred であることを前提としています。また、カメラが HDR モードである方がより望ましい結果になります。
+Effect storage for Unity 5.  
+If you import this package, you can use it as it is: [IstEffects.unitypackage](https://github.com/i-saint/Unity5Effects/raw/master/Packages/IstEffects.unitypackage)  
+Many assume that the rendering pass is deferred. Also, it is more desirable for the camera to be in HDR mode.
 
 ## Temporal Screen Space Reflections
 ![alt text](doc/ScreenSpaceReflections.jpg)  
-スクリーンスペース反射です。  
-kode80 氏が[似たようなもの](https://github.com/kode80/kode80SSR)を公開していますが、そちらとはアルゴリズムが違い、
-若干残像が残ってしまう欠点があるものの、圧倒的に高速でクオリティも引けを取りません。  
-実装の詳細に興味があれば[こちらの記事](http://i-saint.hatenablog.com/entry/2014/12/05/174706)もどうぞ。
-また、上記スクリーンショットの背景は[こちら](https://github.com/i-saint/RaymarchingOnUnity5)の Raymarcher によるものです。
+Screen space reflection.  
+Mr. kode80 has released [something similar](https://github.com/kode80/kode80SSR) but there is a disadvantage that the algorithm is different from that there is a slight afterimage, but overwhelmingly fast and the quality does not get caught.  
+If you are interested in implementation details, please also read [this article](http://i-saint.hatenablog.com/entry/2014/12/05/174706). The background of the above screenshot is from Raymarcher [here](https://github.com/i-saint/RaymarchingOnUnity5).
 
 ## Screen Space Shadows
 ![alt text](doc/ScreenSpaceShadows.gif)  
-G-Buffer をレイマーチすることで影を出せるライトです。点光源の他に線光源も扱えるようになっています。  
-ライティング処理の大部分は<a href="http://blogs.unity3d.com/2015/02/06/extending-unity-5-rendering-pipeline-command-buffers/">公式の CommandBuffer のサンプルプロジェクト</a>から借用しています。
+It is a light that can shade by laying out G - Buffer. Besides point light sources, it can handle line light sources.
+Most of the lighting process is borrowed from [the sample project of the official CommandBuffer](http://blogs.unity3d.com/2015/02/06/extending-unity-5-rendering-pipeline-command-buffers).
 
 ## Screen Space Boolean
 ![alt text](doc/Boolean.gif)  
-G-Buffer 加工によるスクリーンスペースブーリアン演算です。  
-重い、影を正しく処理できない、複雑な立体交差で破綻する、などいくつか問題はありますが、見た目に結構インパクトがある効果は得られます。  
-実装の詳細に興味があれば[こちらの記事 (の下の方)](http://i-saint.hatenablog.com/entry/2014/07/25/001608)もどうぞ。
+Screen space boolean calculation by G-Buffer processing.    
+Although there are some problems such as heavy, inability to correctly process shadows, collapsing with complicated three-dimensional intersections, there are quite a bit of impact on the appearance.
+If you are interested in implementation details, please also [click here](http://i-saint.hatenablog.com/entry/2014/07/25/001608).  
 
 ## Rim Light
 ![alt text](doc/RimLight.jpg)  
-法線と カメラ -> ピクセル位置 の角度が浅い部分を明るくするアレです。
+Normal and Camera -> This is a pixel that lightens the shallow part of the pixel position. 
 
 ## Water Surface & Caustics Field
 ![alt text](doc/WaterSurface.jpg)  
-水面とコースティクスです。  
-水面は G-Buffer をレイマーチすることで屈折をエミュレートしています。コースティクスは 3 次元ノイズで明るくしてそれっぽく見せかけています。
+Water surface and caustics.  
+The surface of the water emulates refraction by re - merging G - Buffer. The caustics is brightened with 3-dimensional noise and appears to be like it.
 
 
 ## Light Particle
 ![alt text](doc/LightParticle.jpg)  
-一粒一粒を Point Light として扱うパーティクルレンダラ。MassParticle の拡張。
+Particle renderer which treats each grain as Point Light. Extension of MassParticle.  
 
 
 ## Procedural Modeling
 ![alt text](doc/ProceduralModeling.jpg)  
-Mesh の表面を開始点としてレイマーチ (sphere tracing) することで、オブジェクトスペースで distance function をレンダリングする代物。
-上の画像は Unity ちゃん以外の背景オブジェクトは全て Cube をピクセルシェーダで加工したものです。
+A substitute that renders a distance function in object space by spheres tracing with the surface of Mesh as the starting point. In the image above, all background objects except Unity are all processed by Cube with pixel shader.
+
 
 ## Metaball
 ![alt text](doc/Metaball.gif)  
-レイマーチによる Metaball。完全に GPU で完結するので、MC 法などでメッシュを生成するよりはずっと高速なはずです。  
-実装には Media Molecule の方が発表した soft_min() 関数を拝借しています。([詳細](http://media.lolrus.mediamolecule.com/AlexEvans_SIGGRAPH-2015-sml.pdf)。この資料プロシージャルモデリングの類に関する情報の宝庫なのでおすすめです) また、D3D11 世代の機能 (StructuredBuffer) を使っているのでやや環境を選びます。  
+Metaball by Ray Maat. It is perfectly complete with GPU, so it should be much faster than mesh generation by MC method etc.
+We have borrowed the soft_min () function announced by Media Molecule for implementation. (This page is recommended because it is a treasure trove of information on the kind of procedural modeling.) In addition, because we are using the function of D3D 11 generation (StructuredBuffer), we choose the environment slightly.
+
 
 ## Temporal SSAO
 ![alt text](doc/SSAO.jpg)  
-dangerous samples を考慮することで残像対策を入れた temporal な SSAO です。  
-動いてる箇所のノイズが目立ち、ちょっと実用に耐えるとは言い難いクオリティですが、動きが少ないシーンに限れば標準 SSAO の倍くらいの速度で近いクオリティの絵が出せます。
-状況によっては役立つこともあるかもしれません。  
-[こちら](http://bitsquid.blogspot.jp/2015/09/temporal-reprojection-and-sao.html) をヒントに実装しました、が、元記事の方がずっと高度な実装になっています。いずれ元記事で言及されている SSAO の発展形にも手を出してみたいところです。
+It is a temporal SSAO which took measures against afterimages by considering dangerous samples.
+Although the noise of the moving part is conspicuous, it is a quality that can not be said to withstand practical use for a moment, but if it is limited to a scene with less movement, you can draw a picture of quality that is close to the standard SSAO speed. It may be useful depending on the situation.
+I implemented [this](http://bitsquid.blogspot.jp/2015/09/temporal-reprojection-and-sao.html) as a hint, but the original article is much more advanced implementation. I would like to try out handouts of SSAO which are mentioned in each original article.
 
 ### Mosaic Field
 ![alt text](doc/mosaic.gif)  
-指定オブジェクトをモザイク領域化するシェーダ。
+Shader that mosaicizes the specified object.
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.
